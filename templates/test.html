@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusGenie API Tester</title>
+</head>
+<body>
+    <h2>CampusGenie API Tester</h2>
+
+    <textarea id="text" rows="6" cols="60" placeholder="Enter text..."></textarea><br><br>
+
+    <button onclick="summarize()">Summarize</button>
+    <button onclick="explain()">Explain</button>
+    <button onclick="deadlines()">Deadlines</button>
+
+    <h3>Output:</h3>
+    <pre id="output"></pre>
+
+    <script>
+        async function summarize() {
+            const text = document.getElementById("text").value;
+            const res = await fetch("/summarize", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({text: text})
+            });
+            const data = await res.json();
+            document.getElementById("output").innerText = data.summary;
+        }
+
+        async function explain() {
+            const text = document.getElementById("text").value;
+            const res = await fetch("/explain", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({topic: text})
+            });
+            const data = await res.json();
+            document.getElementById("output").innerText = data.explanation;
+        }
+
+        async function deadlines() {
+            const text = document.getElementById("text").value;
+            const res = await fetch("/deadlines", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({text: text})
+            });
+            const data = await res.json();
+            document.getElementById("output").innerText = JSON.stringify(data.deadlines, null, 2);
+        }
+    </script>
+</body>
+</html>
