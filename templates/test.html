@@ -1,53 +1,222 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CampusGenie API Tester</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusGenie - AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>CampusGenie API Tester</h2>
 
-    <textarea id="text" rows="6" cols="60" placeholder="Enter text..."></textarea><br><br>
+<div class="mobile-container">
+    
+    <div class="header">
+        <h2>CampusGenie 🧞‍♂️</h2>
+        <p>AI Assistant • IIT Patna</p>
+    </div>
 
-    <button onclick="summarize()">Summarize</button>
-    <button onclick="explain()">Explain</button>
-    <button onclick="deadlines()">Deadlines</button>
+    <div id="home-screen" class="screen active">
+        <p style="font-weight: 600; font-size: 14px; margin-bottom: 15px; color: #94a3b8;">QUICK ACTIONS</p>
+        
+        <button class="btn-main" onclick="goToScreen('analyze-screen')">
+            <span>📝</span> Paste WhatsApp Message
+        </button>
 
-    <h3>Output:</h3>
-    <pre id="output"></pre>
+        <button class="btn-main" onclick="goToScreen('tutor-screen')">
+            <span>🤖</span> Ask a Doubt (AI Tutor)
+        </button>
 
-    <script>
-        async function summarize() {
-            const text = document.getElementById("text").value;
-            const res = await fetch("/summarize", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({text: text})
-            });
-            const data = await res.json();
-            document.getElementById("output").innerText = data.summary;
+        <button class="btn-main btn-panic" onclick="triggerPanicMode()">
+            <span>🚨</span> PANIC MODE
+        </button>
+
+        <p style="font-weight: 600; font-size: 14px; margin-top: 25px; margin-bottom: 15px; color: #94a3b8;">UPCOMING DEADLINES</p>
+        
+        <div class="card" style="border-left: 4px solid #f59e0b;">
+            <h3>CS101 Assignment</h3>
+            <p>📅 Tomorrow, 11:59 PM</p>
+            <p style="font-size: 12px; color: #f59e0b;">● Priority: High</p>
+        </div>
+    </div>
+
+    <div id="analyze-screen" class="screen">
+        <h3>Analyze Message</h3>
+        <p>Paste your group message below:</p>
+        
+        <textarea id="msgInput" placeholder="Example: 'Guys, Maths quiz is scheduled for Friday at 10 AM...'"></textarea>
+        
+        <button id="btn-analyze" class="btn-main btn-primary" onclick="callAnalyzeAPI()">
+            ✨ Analyze Now (API)
+        </button>
+        <button onclick="goToScreen('home-screen')" style="background:none; border:none; color:#94a3b8; width:100%; margin-top:10px; cursor:pointer;">Cancel</button>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <h3>Analysis Result</h3>
+        <p style="color: #10B981; font-weight: bold; font-size: 14px;">✅ AI Found 1 Deadline</p>
+
+        <div class="card">
+            <h3 id="res-title">Loading title...</h3>
+            <p id="res-date">📅 Loading date...</p>
+            <p id="res-desc" style="font-size: 12px; margin-top:5px; color: #888;">...</p>
+            
+            <button id="btn-calendar" class="btn-add-calendar" onclick="callCalendarAPI()">
+                📅 Add to Calendar (Droidrun)
+            </button>
+        </div>
+
+        <button class="btn-main" style="margin-top: 20px;" onclick="goToScreen('home-screen')">Back to Home</button>
+    </div>
+
+    <div id="tutor-screen" class="screen">
+        <h3>AI Tutor 🧠</h3>
+        <p>Enter a topic to get an explanation:</p>
+        <textarea id="tutorInput" placeholder="Ex: Explain Schrodinger's Wave Equation..."></textarea>
+        
+        <button id="btn-tutor" class="btn-main btn-primary" onclick="callTutorAPI()">
+            ✨ Explain Topic
+        </button>
+        <button onclick="goToScreen('home-screen')" style="background:none; border:none; color:#94a3b8; width:100%; margin-top:10px; cursor:pointer;">Back</button>
+    </div>
+
+    <div id="explanation-screen" class="screen">
+        <h3>🧠 AI Explanation:</h3>
+        <div class="card">
+            <p id="tutor-result" style="white-space: pre-wrap; line-height: 1.6;">Loading explanation...</p>
+        </div>
+        <button class="btn-main" onclick="goToScreen('tutor-screen')">Ask Another Doubt</button>
+        <button class="btn-main" onclick="goToScreen('home-screen')">Home</button>
+    </div>
+
+    <div id="success-popup">
+        <div>✅</div>
+        <h3>Synced!</h3>
+        <p>Droidrun Trigger Successful.</p>
+    </div>
+
+</div>
+
+<script>
+    // URL Here
+    const API_BASE_URL = "https://campusgenie-api.onrender.com"; 
+
+    function goToScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function showLoading(btnId, isLoading) {
+        const btn = document.getElementById(btnId);
+        if (isLoading) {
+            btn.dataset.originalText = btn.innerText;
+            btn.innerText = "⏳ Connecting...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true;
+        } else {
+            btn.innerText = btn.dataset.originalText;
+            btn.style.opacity = "1";
+            btn.disabled = false;
         }
+    }
 
-        async function explain() {
-            const text = document.getElementById("text").value;
-            const res = await fetch("/explain", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({topic: text})
-            });
-            const data = await res.json();
-            document.getElementById("output").innerText = data.explanation;
-        }
+    // --- API 1: ANALYZE MESSAGE ---
+    async function callAnalyzeAPI() {
+        const text = document.getElementById('msgInput').value;
+        
+        // --- FIXED ALERT HERE ---
+        if(!text) return alert("Please paste a message first!"); 
 
-        async function deadlines() {
-            const text = document.getElementById("text").value;
-            const res = await fetch("/deadlines", {
+        showLoading('btn-analyze', true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/analyze`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({text: text})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
             });
-            const data = await res.json();
-            document.getElementById("output").innerText = JSON.stringify(data.deadlines, null, 2);
+
+            const data = await response.json();
+
+            document.getElementById('res-title').innerText = data.title || "No Title Found";
+            document.getElementById('res-date').innerText = "📅 " + (data.date || "No Date");
+            document.getElementById('res-desc').innerText = "Source: " + (data.summary || "No Summary");
+
+            goToScreen('result-screen');
+
+        } catch (error) {
+            console.error(error);
+            // --- FIXED ALERT HERE ---
+            alert("Error: Could not connect to Backend! (Check URL)");
+        } finally {
+            showLoading('btn-analyze', false);
         }
-    </script>
+    }
+
+    // --- API 2: ADD TO CALENDAR ---
+    async function callCalendarAPI() {
+        showLoading('btn-calendar', true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/add-to-calendar`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "trigger_droidrun" })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                const popup = document.getElementById('success-popup');
+                popup.style.display = 'block';
+                setTimeout(() => popup.style.display = 'none', 3000);
+            } else {
+                alert("Droidrun Error: " + data.error);
+            }
+
+        } catch (error) {
+            // --- FIXED ALERT HERE ---
+            alert("Failed to trigger Droidrun. Check connection.");
+        } finally {
+            showLoading('btn-calendar', false);
+        }
+    }
+
+    // --- API 3: AI TUTOR ---
+    async function callTutorAPI() {
+        const topic = document.getElementById('tutorInput').value;
+        
+        // --- FIXED ALERT HERE ---
+        if(!topic) return alert("Please enter a topic!");
+
+        showLoading('btn-tutor', true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/explain`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ topic: topic })
+            });
+
+            const data = await response.json();
+            document.getElementById('tutor-result').innerText = data.explanation || "No answer received.";
+            goToScreen('explanation-screen');
+
+        } catch (error) {
+            console.error(error);
+            // --- FIXED ALERT HERE ---
+            alert("AI Tutor could not connect.");
+        } finally {
+            showLoading('btn-tutor', false);
+        }
+    }
+
+    // --- PANIC MODE ---
+    function triggerPanicMode() {
+        // --- FIXED ALERT HERE ---
+        alert("🚨 PANIC MODE ACTIVATED: Blocking Apps & Starting Timer...");
+    }
+
+</script>
+
 </body>
 </html>
