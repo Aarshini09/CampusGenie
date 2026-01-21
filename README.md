@@ -1,8 +1,11 @@
 # 🎓 CampusGenie - AI Academic Assistant
 
+![HTML5](https://img.shields.io/badge/Frontend-HTML5-orange?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/Style-CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/Script-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Backend-Flask-green?style=for-the-badge&logo=flask&logoColor=white)
-![Gemini](https://img.shields.io/badge/AI-Gemini%20Pro-orange?style=for-the-badge&logo=google&logoColor=white)
+![Gemini](https://img.shields.io/badge/AI-Gemini%20Pro-8E75B2?style=for-the-badge&logo=google&logoColor=white)
 ![Droidrun](https://img.shields.io/badge/Automation-Droidrun-red?style=for-the-badge)
 
 > **"Turning WhatsApp Chaos into Calendar Clarity."**
