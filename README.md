@@ -49,12 +49,12 @@ Stuck on a complex topic? Just type it in.
 * **Integration:** Connected the frontend to backend REST APIs (`/analyze`, `/explain`) for real-time data fetching.
 * **UX Logic:** Implemented error handling and success states for the Droidrun trigger.
 
-### 🧠 Adarsh (AI & Prompt Architect)
+### 🧠 Adarsh Mishra (AI & Prompt Architect)
 * **Prompt Engineering:** Designed "System Instructions" to handle unstructured Hinglish inputs and force strict JSON outputs.
 * **Logic Design:** Built the core logic for deadline extraction and context understanding.
 * **Education Module:** Created the prompts for the "Topic Explainer" engine.
 
-### ⚙️ Antra (Backend & Automation Lead)
+### ⚙️ Antra Priyadarshini (Backend & Automation Lead)
 * **Backend Core:** Developed the Flask server to handle API requests and route them to the AI model.
 * **Droidrun Integration:** Implemented the critical Droidrun SDK logic to trigger native Android intents.
 * **Product Demo:** Scripted and recorded the project pitch and demonstration video.
