@@ -42,7 +42,7 @@ Stuck on a complex topic? Just type it in.
 
 ---
 
-## 👥 Team SynergyX
+## 👥 Meet Team SynergyX
 
 ### 🎨 Vaibhav Singh (Frontend & UI Lead)
 * **Architecture:** Designed the responsive Mobile-First UI using HTML/CSS/JS.
