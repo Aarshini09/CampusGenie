@@ -49,7 +49,7 @@ Stuck on a complex topic? Just type it in.
 * **Integration:** Connected the frontend to backend REST APIs (`/analyze`, `/explain`) for real-time data fetching.
 * **UX Logic:** Implemented error handling and success states for the Droidrun trigger.
 
-### 🧠 Adarsh (AI & Prompt Architect)
+### 🧠 Aadarsh Mishra(AI & Prompt Architect)
 * **Prompt Engineering:** Designed "System Instructions" to handle unstructured Hinglish inputs and force strict JSON outputs.
 * **Logic Design:** Built the core logic for deadline extraction and context understanding.
 * **Education Module:** Created the prompts for the "Topic Explainer" engine.
